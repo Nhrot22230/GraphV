@@ -11,7 +11,7 @@ BUILD_DIR="./build"
 
 # Output binaries
 LIBRARY_OUTPUT="$BUILD_DIR/quick_lib.so"
-EXECUTABLE_OUTPUT="$BUILD_DIR/musiV"
+EXECUTABLE_OUTPUT="$BUILD_DIR/graphV"
 
 # Color codes
 GREEN='\033[0;32m'
@@ -20,13 +20,13 @@ NC='\033[0m' # No Color
 
 # Function to display colored messages
 color_msg() {
-    echo -e "$1$2${NC}"
+    echo "$1$2${NC}"
 }
 
 # Function to build the shared library
 build_library() {
     color_msg "${GREEN}" "Building quick_lib.so..."
-    clang $CFLAGS -o "$LIBRARY_OUTPUT" -fPIC -shared "$SRC_DIR/quick_lib.c" "$SRC_DIR/graph.c" $LIBS || {
+    clang "$CFLAGS" -o "$LIBRARY_OUTPUT" -fPIC -shared "$SRC_DIR/quick_lib.c" "$SRC_DIR/graph.c" "$LIBS" || {
         color_msg "${RED}" "Error: Failed to build quick_lib.so."
         exit 1
     }
@@ -35,10 +35,10 @@ build_library() {
 
 # Function to build the main program
 build_program() {
-    color_msg "${GREEN}" "Building musiV..."
+    color_msg "${GREEN}" "Building graphV..."
     export LD_LIBRARY_PATH="$BUILD_DIR"
-    clang $CFLAGS -o "$EXECUTABLE_OUTPUT" "$SRC_DIR/main.c" $LIBS -L"$BUILD_DIR" || {
-        color_msg "${RED}" "Error: Failed to build musiV."
+    clang "$CFLAGS" -o "$EXECUTABLE_OUTPUT" "$SRC_DIR/main.c" "$LIBS" -L"$BUILD_DIR" || {
+        color_msg "${RED}" "Error: Failed to build graphV."
         exit 1
     }
     color_msg "${GREEN}" "Project built successfully."
