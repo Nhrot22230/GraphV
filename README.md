@@ -55,7 +55,7 @@ Mouse Interaction
 - **D**: Performs one step of the search algorithm if a starting node is defined.
 
 # Examples
-
+![First Example](./examples/ex_1.png)
 
 
 # License
