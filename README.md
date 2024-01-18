@@ -28,13 +28,13 @@ make
 ./GraphV
 ```
 
-Features
+# Features
 
     Interactive Graph Manipulation: Create, modify, and delete nodes in the graph using mouse clicks.
     Node States: Nodes can have different states, such as NODE_MOVING and NODE_SELECTED.
     Step-by-Step Search: Perform step-by-step graph search algorithms.
 
-Usage
+# Usage
 
 The core functionality of GraphV is driven by the state_logic function. This function is responsible for handling user input and updating the state of the graph accordingly.
 Mouse Interaction
@@ -45,7 +45,7 @@ Mouse Interaction
 
     Right Mouse Button: Deletes the node at the mouse position and its corresponding edges. If the deleted node was selected, the selection is cleared.
 
-Keyboard Shortcuts
+# Keyboard Shortcuts
 
     SPACE: Prints the ID of the current node. If a node is selected, also prints its state.
     P: Prints the current state of the graph.
