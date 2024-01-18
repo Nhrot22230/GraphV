@@ -7,7 +7,7 @@ GraphV is a lightweight and interactive graph visualization tool implemented in 
 - [Getting Started](#getting-started)
 - [Features](#features)
 - [Usage](#usage)
-- [Key Bindings](#key-bindings)
+- [Key Bindings](#keyboard-shortcuts)
 - [Examples](#examples)
 - [License](#license)
 
@@ -24,8 +24,8 @@ Clone the repository and compile the source code using a C compiler:
 ```bash
 git clone https://github.com/yourusername/GraphV.git
 cd GraphV
-make
-./GraphV
+./project_setup.sh --build
+./project_setup.sh --run
 ```
 
 # Features
@@ -39,18 +39,18 @@ make
 The core functionality of GraphV is driven by the state_logic function. This function is responsible for handling user input and updating the state of the graph accordingly.
 Mouse Interaction
 
-    Left Mouse Button:
+    **Left Mouse Button**:
         Click on an existing node: Selects the node if not already selected. If the node is in NODE_MOVING state, it returns it to the default state.
         Click on empty space: Adds a new vertex to the graph at the mouse position.
 
-    Right Mouse Button: Deletes the node at the mouse position and its corresponding edges. If the deleted node was selected, the selection is cleared.
+    **Right Mouse Button**: Deletes the node at the mouse position and its corresponding edges. If the deleted node was selected, the selection is cleared.
 
 # Keyboard Shortcuts
 
-    SPACE: Prints the ID of the current node. If a node is selected, also prints its state.
-    P: Prints the current state of the graph.
-    C: Clears the graph and resets various parameters, such as time, selected nodes, and search state.
-    W: Resets the search state and clears visited nodes in the graph.
-    S: Switches between search mode and normal mode. In search mode, you can perform graph search algorithms.
-    A: Prints information about the search state.
-    D: Performs one step of the search algorithm if a starting node is defined.
+    **SPACE**: Prints the ID of the current node. If a node is selected, also prints its state.
+    **P**: Prints the current state of the graph.
+    **C**: Clears the graph and resets various parameters, such as time, selected nodes, and search state.
+    **W**: Resets the search state and clears visited nodes in the graph.
+    **S**: Switches between search mode and normal mode. In search mode, you can perform graph search algorithms.
+    **A**: Prints information about the search state.
+    **D**: Performs one step of the search algorithm if a starting node is defined.
