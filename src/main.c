@@ -10,13 +10,13 @@
 
 #include <dlfcn.h>
 
-#include "quick_lib.h"
+#include "qlib.h"
 
 #define X(name, ...) name##_t *name = NULL;
 LIST_FUNC
 #undef X
 
-const char *qlib_name = "quick_lib.so";
+const char *qlib_name = "qlib.so";
 void *qlib = NULL;
 
 int lib_reload(void){
@@ -42,13 +42,11 @@ int lib_reload(void){
 
 
 int main(void){
-
     lib_reload();
 
     size_t factor = 60;
-    InitWindow(factor*16, factor*9, "MusiV");
+    InitWindow(factor*16, factor*9, "GraphV");
 
-    
     SetTargetFPS(60);
     
     state_init();
@@ -61,7 +59,9 @@ int main(void){
             state_post_reload(state);
         }
 
+        state_logic();
         state_update();
+        state_render();
     }
     CloseWindow();
 

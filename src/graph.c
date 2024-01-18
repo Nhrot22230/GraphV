@@ -11,10 +11,46 @@ struct Node* node_create(int id) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     if (newNode != NULL) {
         newNode->id = id;
+        newNode->w = 0;
         newNode->next = NULL;
     }
     return newNode;
 }
+
+int IsNodeHere(struct Graph *g, float posX, float posY, float radius){
+    float max_Xrange = posX + radius;
+    float min_Xrange = posX - radius;
+
+    float max_Yrange = posY + radius;
+    float min_Yrange = posY - radius;
+
+    for(int id = 0; id<g->n_vertex; ++id){
+        if(g->arr[id].id == -1) continue;
+
+        float x = g->arr[id].curX;
+        float y = g->arr[id].curY;
+
+        if( (min_Xrange <= x && x <= max_Xrange) && (min_Yrange <= y && y <= max_Yrange) ) 
+            return id;
+    }
+
+    return -1;
+}
+
+void node_move(struct Graph *g, int id, float posX, float posY){
+    g->arr[id].posX = posX;
+    g->arr[id].posY = posY;
+
+    g->arr[id].curX = posX;
+    g->arr[id].curY = posY;
+}
+
+void node_alt_state(struct Graph *g, int id){
+    g->arr[id].state = (g->arr[id].state + 1) % (TOTAL_STATES + 1);
+    
+    if(g->arr[id].state == 0) g->arr[id].state = DEFAULT_STATE;
+}
+
 
 // Function to initialize a new ListNode
 struct ListNode* list_init() {
@@ -79,6 +115,7 @@ void list_free(struct ListNode* list) {
         current = nextNode;
     }
     free(list);
+    list = NULL;
 }
 
 // Function to check if the list is empty
@@ -179,9 +216,16 @@ void graph_deleteEdge(struct Graph* g, int id_src, int id_dest) {
 
 // Function to delete a vertex from the graph
 void graph_deleteNode(struct Graph* g, int id) {
-    list_free(g->arr[id].adj);
     g->arr[id].id = NODE_UNDEF;
+    
+    list_free(g->arr[id].adj);
+
     g->arr[id].adj = list_init();
+    g->arr[id].state = DEFAULT_STATE;
+    g->arr[id].posX = 0;
+    g->arr[id].posY = 0;
+    g->arr[id].curX = 0;
+    g->arr[id].curY = 0;
 
     for(int i=0; i<g->n_vertex; ++i){
         if(g->arr[i].id == NODE_UNDEF) continue;
@@ -202,6 +246,24 @@ void graph_print(struct Graph* g) {
             current = current->next;
         }
         printf("\n");
+    }
+}
+
+void graph_clean(struct Graph *g){
+    for(int i=0; i<g->n_vertex; ++i){
+        if(g->arr[i].id == NODE_UNDEF) continue;
+        
+        graph_deleteNode(g, i);
+        g->arr_visited[i] = NODE_NOT_VISITED;
+        g->arr[i].state = DEFAULT_STATE;
+    }
+}
+
+void graph_clean_visited(struct Graph *g){
+    for(int id=0; id<g->n_vertex; ++id){
+        if(g->arr[id].id == NODE_UNDEF) continue;
+
+        g->arr_visited[id] = NODE_NOT_VISITED;
     }
 }
 
@@ -234,28 +296,77 @@ void graph_dfs(struct Graph* g, int id){
 }
 
 
-void search_state_init(struct SearchState* state, int n_vertex) {
+void search_state_init(struct SearchState *state, int n_vertex) {
     state->stack = (int*)malloc(n_vertex * sizeof(int));
     state->top = NODE_UNDEF;
+    state->mode = DEFAULT_SEARCH_MODE;
 }
 
-void search_state_push(struct SearchState* state, int vertex) {
+void search_state_restart(struct SearchState *state, int vertex){
+    search_state_clean(state);
+    if(state->mode == DFS) search_state_push(state, vertex);
+    else if(state->mode == BFS) search_state_enque(state, vertex);
+    else search_state_push(state, vertex);
+}
+
+void search_state_switch_mode(struct SearchState *state){
+    int mode = state->mode;
+    mode = (mode + 1)%(TOTAL_MODES + 1);
+    if(mode == 0) mode = DEFAULT_SEARCH_MODE;
+
+    state->mode = mode;
+}
+
+void search_state_push(struct SearchState *state, int vertex) {
     state->stack[++state->top] = vertex;
 }
 
-int search_state_pop(struct SearchState* state) {
+int search_state_pop(struct SearchState *state) {
     return state->stack[state->top--];
 }
 
-int search_state_empty(struct SearchState* state) {
-    return state->top == NODE_UNDEF;
+void search_state_enque(struct SearchState *state, int vertex){
+    state->top = state->top + 1;
+    state->stack[state->top] = vertex;
 }
 
+int search_state_deque(struct SearchState *state){
+    int val = state->stack[0];
 
-int dfs_step(struct Graph* g, struct SearchState* state) {
-    if (search_state_empty(state)) {
-        return -1; // Search completed
+    for(int i=1; i<=state->top; ++i){
+        state->stack[i-1] = state->stack[i];
     }
+    
+    state->stack[state->top] = 0;
+    state->top = state->top - 1;
+    return val;
+}
+
+int search_state_empty(struct SearchState *state) {
+    return state->top == -1;
+}
+
+void search_state_clean(struct SearchState *state){
+    while(state->top != -1) search_state_pop(state);
+}
+
+void search_state_print(struct SearchState *state){
+    const char *s_BFS = "Breadth First Search";
+    const char *s_DFS = "Depth First Search";
+
+    printf("SearchState status:\n");
+    if(state->mode == DFS) printf("   - Mode: %s\n", s_DFS);
+    else if(state->mode == BFS) printf("   - Mode: %s\n", s_BFS);
+    else printf("   - Mode: %s\n", s_DFS);
+
+    printf("   - Stored Values:");
+    for(int i=0; i<= state->top; ++i) printf(" %0d", state->stack[i]);
+    printf("\n");
+}
+
+int dfs_step(struct Graph* g, struct SearchState *state) {
+    if (search_state_empty(state)) return -1; // Search completed
+    
 
     int current = search_state_pop(state);
 
@@ -276,3 +387,31 @@ int dfs_step(struct Graph* g, struct SearchState* state) {
     return 1; // Move to the next step
 }
 
+
+int bfs_step(struct Graph *g, struct SearchState *state){
+    if(search_state_empty(state)) return -1;
+
+    int cur = search_state_deque(state);
+
+    if(g->arr_visited[cur] == NODE_VISITED) return 0;
+
+    g->arr_visited[cur] = NODE_VISITED;
+
+    struct Node *neighbor = g->arr[cur].adj->head;
+    while(neighbor != NULL){
+        if(g->arr_visited[neighbor->id] == NODE_NOT_VISITED){
+            search_state_enque(state, neighbor->id);
+        }
+        neighbor = neighbor->next;
+    }
+
+    return 1;
+}
+
+
+int search_step(struct Graph *g, struct SearchState *state){
+    if(state->mode == DFS) return dfs_step(g, state);
+    else if(state->mode == BFS) return bfs_step(g, state);
+    
+    return dfs_step(g, state);
+}
