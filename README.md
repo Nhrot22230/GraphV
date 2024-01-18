@@ -1,6 +1,6 @@
 # GraphV - Interactive Graph Visualization
 
-GraphV is a lightweight and interactive graph visualization tool implemented in C using the [Raylib](https://www.raylib.com/) library. It allows users to create, manipulate, and visualize graphs with intuitive mouse and keyboard interactions.
+GraphV is a lightweight and interactive graph visualization tool implemented in C using the [Raylib](https://www.raylib.com/) library. It allows users to create, manipulate, and visualize graphs with intuitive mouse and keyboard interactions. Just works for Linux :c.
 
 ## Table of Contents
 
