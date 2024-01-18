@@ -53,3 +53,12 @@ Mouse Interaction
 - **S**: Switches between search mode and normal mode. In search mode, you can perform graph search algorithms.
 - **A**: Prints information about the search state.
 - **D**: Performs one step of the search algorithm if a starting node is defined.
+
+# Examples
+
+
+
+# License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Feel free to customize it further based on your needs!
