@@ -1,34 +1,32 @@
-##GraphV - Interactive Graph Visualization
+# GraphV - Interactive Graph Visualization
 
-GraphV is a lightweight and interactive graph visualization tool implemented in C using the Raylib library. It allows users to create, manipulate, and visualize graphs with intuitive mouse and keyboard interactions.
-Table of Contents
+GraphV is a lightweight and interactive graph visualization tool implemented in C using the [Raylib](https://www.raylib.com/) library. It allows users to create, manipulate, and visualize graphs with intuitive mouse and keyboard interactions.
 
-    Getting Started
-    Features
-    Usage
-    Key Bindings
-    Examples
-    License
+## Table of Contents
 
-Getting Started
-Prerequisites
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Usage](#usage)
+- [Key Bindings](#key-bindings)
+- [Examples](#examples)
+- [License](#license)
 
-Make sure you have Raylib installed on your system. Follow the Raylib installation instructions for your platform.
-Compilation
+## Getting Started
+
+### Prerequisites
+
+Make sure you have Raylib installed on your system. Follow the [Raylib installation instructions](https://github.com/raysan5/raylib/wiki/Working-on-macOS) for your platform.
+
+### Compilation
 
 Clone the repository and compile the source code using a C compiler:
 
-bash
-
+```bash
 git clone https://github.com/yourusername/GraphV.git
 cd GraphV
 make
-
-Run the compiled executable:
-
-bash
-
 ./GraphV
+```
 
 Features
 
