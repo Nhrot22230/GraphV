@@ -7,6 +7,7 @@ enum NodeState {
     NODE_UNDEF = -1,
     NODE_NOT_VISITED = 0,
     NODE_VISITED = 1,
+    NODE_ENQUED = 10,
     NODE_NOT_SELECTED = 2,
     NODE_SELECTED = 3,
     NODE_MOVING = 4,
@@ -45,6 +46,7 @@ struct Graph {
     struct GraphNode* arr;
     int n_vertex;
     int* arr_visited; // Added for DFS/BFS support
+    float *distances;
 };
 
 // Define the structure for SearchState
@@ -106,7 +108,6 @@ int dfs_step(struct Graph *g, struct SearchState *state);
 int bfs_step(struct Graph *g, struct SearchState *state);
 int search_step(struct Graph *g, struct SearchState *state);
 void stepped_dfs(struct Graph *g, int start_vertex, struct SearchState *state);
-
 
 #endif // GRAPH_H
 

@@ -142,6 +142,7 @@ struct GraphNode* graphNode_create(int id, float x, float y) {
 // Function to initialize a new Graph
 void graph_create(struct Graph* g) {
     g->arr_visited = NULL;
+    g->distances = NULL;
     g->arr = NULL;
     g->n_vertex = 0;
 }
@@ -161,6 +162,8 @@ void graph_init(struct Graph* g, int n) {
         printf("BUY MORE RAM lol.\n");
         return;
     }
+
+    g->distances = (float *)malloc(n * sizeof(float));
 
     g->n_vertex = n;
     for (int i = 0; i < n; i++) {
@@ -190,7 +193,7 @@ void graph_addEdge(struct Graph* g, int id_src, int id_dest) {
 
     if (id_src >= 0 && id_src < g->n_vertex && id_dest >= 0 && id_dest < g->n_vertex) {
         list_addNode(g->arr[id_src].adj, id_dest);
-        list_addNode(g->arr[id_dest].adj, id_src);
+        //list_addNode(g->arr[id_dest].adj, id_src);
     }
 }
 
@@ -399,9 +402,14 @@ int bfs_step(struct Graph *g, struct SearchState *state){
 
     struct Node *neighbor = g->arr[cur].adj->head;
     while(neighbor != NULL){
-        if(g->arr_visited[neighbor->id] == NODE_NOT_VISITED){
-            search_state_enque(state, neighbor->id);
+        if(
+                g->arr_visited[neighbor->id] != NODE_VISITED & 
+                g->arr_visited[neighbor->id] != NODE_ENQUED
+                ){
+                g->arr_visited[neighbor->id] = NODE_ENQUED;
+                search_state_enque(state, neighbor->id);
         }
+        
         neighbor = neighbor->next;
     }
 

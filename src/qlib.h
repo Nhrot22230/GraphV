@@ -1,3 +1,6 @@
+#ifndef QLIB_H
+#define QLIB_H
+
 #include <assert.h>
 #include <complex.h>
 #include <math.h>
@@ -38,7 +41,9 @@ int StackId_pop(struct StackId *stack);
 void StackId_update_graph(struct StackId *stack, struct Graph *g);
 void StackId_clean(struct StackId *stack);
 
-void graph_edges_render(struct Graph *g);
+void graph_edges_render(struct Graph *g, float radius);
 void graph_extra_render(struct Graph *g);
-void graph_nodes_render(struct Graph *g);
+void graph_nodes_render(struct Graph *g, float radius);
 void graph_draw(struct Graph *g);
+
+#endif //QLIB_H

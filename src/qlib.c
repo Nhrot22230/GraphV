@@ -3,7 +3,7 @@
 Plug *plug = NULL;
 
 const int N = 100;
-const float v_radius = 20.0f;
+const float v_radius = 15.0f;
 const float speed = 0.0f;
 const float amp = 25.0f;
 
@@ -33,8 +33,8 @@ int StackId_pop(struct StackId *stack){
 void StackId_update_graph(struct StackId *stack, struct Graph *g){
     if(stack->len < 2) return;
 
-    int src_id = StackId_pop(stack);
     int des_id = StackId_pop(stack);
+    int src_id = StackId_pop(stack);
     
     if(list_hasId(g->arr[src_id].adj, des_id) == -1)
         graph_addEdge(g, src_id, des_id);
@@ -45,13 +45,14 @@ void StackId_update_graph(struct StackId *stack, struct Graph *g){
     g->arr[des_id].state = DEFAULT_STATE;
 }
 
+
 /************************************************************
  *                                                          *
  *                Start of Function Declarations            *
  *                                                          *
  ************************************************************/
 
-void graph_edges_render(struct Graph *g){
+void graph_edges_render(struct Graph *g, float radius){
     const int n = g->n_vertex;
     
     for(int i=0; i<n; ++i){
@@ -64,16 +65,56 @@ void graph_edges_render(struct Graph *g){
         for(cur = g->arr[i].adj->head; cur; cur=cur->next){
             int fPosX = g->arr[cur->id].curX;
             int fPosY = g->arr[cur->id].curY;
+
             DrawLine(posX, posY, fPosX, fPosY, PURPLE);
+
+            float rot = 0.0f;
+
+            if(fabs(fPosX - posX) >= 0.001f) rot = atanf( (posY - fPosY)/(fPosX - posX) );
+
+            if(fPosX < posX) rot += M_PI;
+            if(fPosX > posX & fPosY > posY) rot += 2*M_PI;
+
+            float x0, y0, x1, y1, x2, y2;
+            float A_H = radius;
+
+            x0 = fPosX - radius * cosf(rot); y0 = fPosY + radius * sinf(rot);
+            x1 = x0 - A_H * sinf(rot + M_PI/4); y1 = y0 + A_H * sinf(rot - M_PI/4);
+            x2 = x0 + A_H * sinf(rot - M_PI/4); y2 = y0 + A_H * sinf(rot + M_PI/4);
+            /* 
+            char buffer [30];
+            sprintf(buffer, "%5.2f deg", rot*(180.f/M_PI));
+            DrawText(buffer, 0, 0, 20, WHITE);
+            
+            sprintf(buffer, "x0: %5.2f", x0);
+            DrawText(buffer, 0, 20.0f, 20, WHITE);
+            sprintf(buffer, "y0: %5.2f", y0);
+            DrawText(buffer, 400.0f, 20.0f, 20, WHITE);
+            
+            sprintf(buffer, "x1: %5.2f", x1);
+            DrawText(buffer, 0, 40.0f, 20, WHITE);
+            sprintf(buffer, "y1: %5.2f", y1);
+            DrawText(buffer, 400.0f, 40.0f, 20, WHITE);
+            
+            sprintf(buffer, "x2: %5.2f", x2);
+            DrawText(buffer, 0, 60.0f, 20, WHITE);
+            sprintf(buffer, "y2: %5.2f", y2);
+            DrawText(buffer, 400.0f, 60.0f, 20, WHITE);
+            */
+            DrawTriangle(
+                    (Vector2) {x0, y0},
+                    (Vector2) {x1, y1},
+                    (Vector2) {x2, y2},
+                    PURPLE
+                    );
         }
     }
 }
 
 void graph_extra_render(struct Graph *g){
-
 }
 
-void graph_nodes_render(struct Graph *g){
+void graph_nodes_render(struct Graph *g, float radius){
     const int n = g->n_vertex;
     for(int i=0; i<n; ++i){
         if(g->arr[i].id == NODE_UNDEF) continue;
@@ -89,7 +130,7 @@ void graph_nodes_render(struct Graph *g){
         else if(g->arr[i].state == NODE_MOVING) c = WHITE;
         else if(g->arr_visited[i] == NODE_VISITED) c = ORANGE;
 
-        DrawCircle(posX, posY, v_radius, c);
+        DrawCircle(posX, posY, radius, c);
         
         int font_size = 30;
         
@@ -103,12 +144,11 @@ void graph_nodes_render(struct Graph *g){
 }
 
 void graph_draw(struct Graph *g){
-    
-    graph_edges_render(g);
+    graph_edges_render(g, v_radius);
     
     graph_extra_render(g);
 
-    graph_nodes_render(g);
+    graph_nodes_render(g, v_radius);
 }
 
 void StackId_clean(struct StackId *stack){
@@ -176,7 +216,7 @@ void state_logic(void){
         float posY = GetMouseY();
             
         int temp_id = IsNodeHere(&plug->g, posX, posY, v_radius);
-        graph_deleteNode(&plug->g, temp_id);
+        if(temp_id != NODE_UNDEF) graph_deleteNode(&plug->g, temp_id);
 
         if(id_node == temp_id) id_node = -1;
     }
