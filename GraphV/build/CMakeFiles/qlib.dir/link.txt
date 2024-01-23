@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC  -Wall -Wextra -ggdb -shared -Wl,-soname,libqlib.so -o libqlib.so CMakeFiles/qlib.dir/src/qlib.c.o CMakeFiles/qlib.dir/src/graph.c.o  /usr/lib/libraylib.so -L/usr/lib -lraylib 
