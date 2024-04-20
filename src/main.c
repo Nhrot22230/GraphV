@@ -45,13 +45,14 @@ int main(void){
     lib_reload();
 
     size_t factor = 60;
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(factor*16, factor*9, "GraphV");
-
+    InitAudioDevice();
     SetTargetFPS(60);
     
     state_init();
     while(!WindowShouldClose()){
-        if(IsKeyPressed(KEY_Q)) break;
+        if(IsKeyPressed(KEY_ESCAPE)) break;
 
         if(IsKeyPressed(KEY_R)){
             void *state = state_pre_reload();
@@ -60,6 +61,8 @@ int main(void){
         }
 
         state_logic();
+        // state_visual_logic(); // DFS - BFS 
+        // state_insert_logic(); // Insertion - Deletion
         state_update();
         state_render();
     }

@@ -1,0 +1,88 @@
+GraphV Development Notes
+
+Date: Thursday - 01/18/2024 :: 10:13 am - 10:37 am
+
+Current Project State:
+-----------------------
+**Recent Developments:**
+- The Graph is perfectly plotted.
+- The NODE_MOVING state is well defined but not completely tested.
+- The function `IsNodeHere?` works well but gets the minimum id node in the search area; it should get the nearest Node.
+- Need a way to clean just the `Search_state`.
+
+TODO List:
+----------
+1. **Node Operations:**
+   - Add new ways to add/modify/delete Nodes.  (DONE)
+   - Verify and fix issues with Node deletion. (DONE)
+
+2. **Graph Input:**
+   - Add a parser for Graph creation (Drag and Drop) with correctness verification.
+   - Investigate and address potential slowdowns during creation.
+
+3. **Enhancements:**
+   - Add sound effects. 
+   - Modify `Search_State` to support BFS/other search implementations. (DONE)
+   - Add BFS Search. (DONE)
+   - Define a `priority_queue` in C. (IN STUDY)
+   - Add Dijkstra's Graph Algorithm. 
+
+Research:
+--------------
+1. **Priority Queue Implementation:**
+   - Research and decide on the best approach for implementing a priority queue in C.
+   - Explore different data structures like binary heaps, Fibonacci heaps, etc.
+   - Consider the trade-offs and suitability of each approach for the project requirements.
+
+2. **Graph Input and Parsing:**
+   - Investigate efficient methods for parsing and creating a graph from user input.
+   - Explore Drag and Drop functionalities and their implementation in graphical user interfaces.
+   - Research algorithms for correctness verification of the created graphs.
+
+3. **Search Algorithms:**
+   - Research and understand various graph search algorithms (e.g., BFS, DFS, Dijkstra's).
+   - Investigate their implementations and consider their suitability for your project's requirements.
+
+4. **Node Deletion Issues:**
+   - Research potential issues related to node deletion.
+   - Explore algorithms and best practices for safely deleting nodes in a graph structure.
+
+5. **Code Quality Improvement:**
+   - Research code refactoring techniques to improve the overall quality of your code.
+   - Explore best practices for writing clean, maintainable, and efficient C code.
+
+6. **Entity Component System (ECS):**
+    - Research the benefits and implementation details of an Entity Component System (ECS).
+    - Explore how adopting ECS might improve the structure and scalability of your code.
+
+7. **Parser Performance:**
+    - Investigate performance considerations for the graph parser, especially when dealing with large graphs.
+    - Explore optimizations to ensure efficient parsing without compromising application responsiveness.
+
+Idea List:
+-----------
+1. **Graph Structure:**
+   - Consider using a Directed Graph.
+   - Draw an arrow from A->B if there is an Edge (A->B).
+
+2. **User Experience:**
+   - Add movement animations.
+   - Explore implementing different modes like vim [visual/insert/etc].
+
+3. **Code Structure:**
+   - Consider adopting an Entity Component System (ECS) - Jorgito.
+
+Current Bugs:
+--------------
+1. Not deleting Nodes generates some problems.
+2. Verify the maximum number of nodes.
+3. (Not a bug) but code quality needs improvement; plan code refactoring.
+
+Possible New Features:
+------------------------
+1. **User Interaction:**
+   - Implement different modes like vim [visual/insert/etc].
+   - Make a wrapper to add entities [Environment/Agent/Program].
+
+2. **Education:**
+   - Implement the algorithms of INF265.

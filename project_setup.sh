@@ -45,37 +45,46 @@ build_program() {
 }
 
 # Parse command-line arguments
-for arg in "$@"; do
-    case $arg in
+while [ "$#" -gt 0 ]; do
+    case $1 in
         --build)
             BUILD=true
             ;;
         --run)
             RUN=true
             ;;
+        --clean)
+            CLEAN=true
+            ;;
         *)
-            color_msg "${RED}" "Error: Unknown option: $arg"
+            color_msg "${RED}" "Error: Unknown option: $1"
             exit 1
             ;;
     esac
+    shift
 done
 
 # Create build directory if necessary
 [ "$BUILD" = true ] && mkdir -p "$BUILD_DIR"
 
+# Clean build directory if requested
+if [ "$CLEAN" = true ]; then
+    color_msg "${GREEN}" "Cleaning build directory..."
+    rm -rf "$BUILD_DIR"
+    color_msg "${GREEN}" "Build directory cleaned."
+fi
+
 # Build the shared library libplug.so if needed
 if [ "$BUILD" = true ]; then
-	set -xe
+    set -xe
     build_library
 fi
 
 # Build the main program audioVisualizer if needed
 if [ "$RUN" = true ]; then
     build_program
-
     "$EXECUTABLE_OUTPUT"
 fi
 
 # Print build success message
 [ "$BUILD" = true ] && color_msg "${GREEN}" "Build completed successfully."
-

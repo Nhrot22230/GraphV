@@ -25,7 +25,8 @@ struct Node {
 // Define the structure for a ListNode (contains a pointer to the head of the list)
 struct ListNode {
     struct Node* head;
-    int length;
+    struct Node* tail;
+    int len;
 };
 
 // Define the structure for a GraphNode
@@ -38,7 +39,7 @@ struct GraphNode {
     
     float curX;
     float curY;
-    struct ListNode* adj;
+    struct ListNode adj;
 };
 
 // Define the structure for a Graph
@@ -46,7 +47,7 @@ struct Graph {
     struct GraphNode* arr;
     int n_vertex;
     int* arr_visited; // Added for DFS/BFS support
-    float *distances;
+    float* distances; // Added for future Dijsktra support
 };
 
 // Define the structure for SearchState
@@ -60,21 +61,30 @@ enum{
 struct SearchState {
     int* stack;
     int top;
+    int front;
+    int back;
+    int len;
     int mode;
 };
 
 // Function declarations
 struct Node* node_create(int id);
+float GetDistance(float x1, float y1, float x2, float y2);
 int IsNodeHere(struct Graph *g, float posX, float posY, float radius);
 void node_move(struct Graph *g, int id, float posX, float posY); 
 void node_alt_state(struct Graph *g, int id);
 
-struct ListNode* list_init();
+struct ListNode* list_create();
+void list_init(struct ListNode *list);
 int list_hasId(struct ListNode *list, int id);
-void list_addNode(struct ListNode *list, int id);
+void list_addNodeLeft(struct ListNode *list, int id);
+void list_addNodeRight(struct ListNode *list, int id);
 void list_deleteNode(struct ListNode *list, int id);
 void list_free(struct ListNode *list);
 int list_empty(struct ListNode *list);
+int list_get_len(struct ListNode *list);
+int list_popRight(struct ListNode* list);
+int list_popLeft(struct ListNode* list);
 
 struct GraphNode* graphNode_create(int id, float x, float y);
 
@@ -93,7 +103,6 @@ void graph_free(struct Graph* g);
 void graph_dfs(struct Graph *g, int id);
 
 void search_state_init(struct SearchState *state, int n_vertex);
-void search_state_restart(struct SearchState *state, int vertex);
 void search_state_switch_mode(struct SearchState *state);
 
 void search_state_push(struct SearchState *state, int vertex);
@@ -102,12 +111,18 @@ int search_state_deque(struct SearchState *state);
 int search_state_pop(struct SearchState *state);
 int search_state_empty(struct SearchState *state);
 void search_state_clean(struct SearchState *state);
+
+const char* search_state_get_mode_string(int mode);
+void print_search_mode(int mode);
+void print_status_info(struct SearchState* state);
+void print_stored_values(struct SearchState* state);
 void search_state_print(struct SearchState *state);
 
 int dfs_step(struct Graph *g, struct SearchState *state);
 int bfs_step(struct Graph *g, struct SearchState *state);
+
 int search_step(struct Graph *g, struct SearchState *state);
-void stepped_dfs(struct Graph *g, int start_vertex, struct SearchState *state);
+void search_insert(struct SearchState *state, int src_node);
 
 #endif // GRAPH_H
 
