@@ -10,7 +10,7 @@
 
 #include "graph.h"
 
-#include <raylib.h>
+#include "../raylib/src/raylib.h"
 
 struct StackId{
     int st[10];
@@ -53,7 +53,7 @@ typedef struct {
     int src_node;
 
     Sound sfx[10];
-    
+
     Snowflake snowfall[200];
 
     Sound notas[10];
@@ -97,7 +97,6 @@ void state_delNode(struct Graph *g, struct StackId *stack, struct ListNode *list
 void state_restart(Plug *p);
 void state_restart_search(Plug *p);
 void state_print(Plug *p);
-
 // Snow Functions
 
 void InitializeSnowfall(Snowflake snowfall[], int screenWidth, int screenHeight);

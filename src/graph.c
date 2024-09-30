@@ -47,6 +47,7 @@ int IsNodeHere(struct Graph* g, float posX, float posY, float radius) {
     return nearestNode;
 }
 
+
 void node_move(struct Graph *g, int id, float posX, float posY){
     g->arr[id].posX = posX;
     g->arr[id].posY = posY;
@@ -57,7 +58,7 @@ void node_move(struct Graph *g, int id, float posX, float posY){
 
 void node_alt_state(struct Graph *g, int id){
     g->arr[id].state = (g->arr[id].state + 1) % (TOTAL_STATES + 1);
-    
+
     if(g->arr[id].state == 0) g->arr[id].state = DEFAULT_STATE;
 }
 
@@ -242,14 +243,14 @@ void graph_create(struct Graph* g) {
 // Function to initialize a new Graph with 'n' vertices
 void graph_init(struct Graph* g, int n) {
     g->arr_visited = (int *) malloc(n * sizeof(int));
-    
+
     if(g->arr_visited == NULL){
         printf("BUY RAM xd\n");
         return;
     }
 
     g->arr = (struct GraphNode*)malloc(n * sizeof(struct GraphNode));
-    
+
     if (g->arr == NULL) {
         printf("BUY MORE RAM lol.\n");
         return;
@@ -312,7 +313,7 @@ void graph_deleteEdge(struct Graph* g, int id_src, int id_dest) {
 // Function to delete a vertex from the graph
 void graph_deleteNode(struct Graph* g, int id) {
     g->arr[id].id = NODE_UNDEF;
-    
+
     list_free(&g->arr[id].adj);
 
     list_init(&g->arr[id].adj);
@@ -347,7 +348,7 @@ void graph_print(struct Graph* g) {
 void graph_clean(struct Graph *g){
     for(int i=0; i<g->n_vertex; ++i){
         if(g->arr[i].id == NODE_UNDEF) continue;
-        
+
         graph_deleteNode(g, i);
         g->arr_visited[i] = NODE_NOT_VISITED;
         g->arr[i].state = DEFAULT_STATE;
@@ -391,8 +392,8 @@ void graph_dfs(struct Graph* g, int id){
 
 void search_state_init(struct SearchState *state, int n_vertex) {
     state->stack = (int*)malloc(n_vertex * sizeof(int));
-    
-    for(int i=0; i<n_vertex; ++i) 
+
+    for(int i=0; i<n_vertex; ++i)
         state->stack[i] = NODE_UNDEF;
 
     state->front = NODE_UNDEF;
@@ -405,14 +406,14 @@ void search_state_init(struct SearchState *state, int n_vertex) {
 void search_state_switch_mode(struct SearchState *state){
     int mode = state->mode;
     mode = (mode + 1)%(TOTAL_MODES + 1);
-    
+
     if(mode == 0) mode = DEFAULT_SEARCH_MODE;
 
     state->mode = mode;
 }
 
 void search_state_polish(struct SearchState *state, int vertex){
-    
+
     for(int i=0; i<state->len; ++i){
         if(state->stack[i] == vertex) state->stack[i] = -1;
     }
@@ -420,7 +421,7 @@ void search_state_polish(struct SearchState *state, int vertex){
     int i=0, j=0;
     for(i=0, j=0; i<state->len; ++i)
         if(state->stack[i] != -1) state->stack[j++] = state->stack[i];
-    
+
     //j++;
     state->front = j - 1;
     for(; j<state->len; ++j) state->stack[j] = -1;
@@ -430,7 +431,7 @@ void search_state_push(struct SearchState *state, int vertex) {
     search_state_polish(state, vertex);
 
     state->front = state->front + 1;
-    
+
     state->stack[state->front] = vertex;
 }
 
@@ -447,9 +448,9 @@ int search_state_pop(struct SearchState *state) {
 
 void search_state_enque(struct SearchState *state, int vertex){
     if(state->back == NODE_UNDEF) state->back = 0;
-    
+
     state->front = state->front + 1;
-    
+
     state->stack[state->front] = vertex;
 }
 
@@ -460,7 +461,7 @@ int search_state_deque(struct SearchState *state){
         return NODE_UNDEF;
     }
     int val = state->stack[state->back];
-    
+
     state->stack[state->back] = NODE_UNDEF;
     state->back = state->back + 1;
 
@@ -523,13 +524,13 @@ void search_state_print(struct SearchState* state) {
 }
 
 int dfs_step(struct Graph* g, struct SearchState *state) {
-    if (search_state_empty(state)) return -1; // Search completed  
+    if (search_state_empty(state)) return -1; // Search completed
 
     int cur = search_state_pop(state);
     if(cur == NODE_UNDEF) return 0;
 
     if (g->arr_visited[cur] == NODE_VISITED) return 0; // Already visited, move to the next step
-    
+
     g->arr_visited[cur] = NODE_VISITED;
 
     struct Node* neighbor = g->arr[cur].adj.head;
@@ -557,7 +558,7 @@ int bfs_step(struct Graph *g, struct SearchState *state){
     struct Node *neighbor = g->arr[cur].adj.head;
     while(neighbor != NULL){
         if(
-                (g->arr_visited[neighbor->id] != NODE_VISITED) & 
+                (g->arr_visited[neighbor->id] != NODE_VISITED) &
                 (g->arr_visited[neighbor->id] != NODE_ENQUED )
                 ){
             g->arr_visited[neighbor->id] = NODE_ENQUED;
@@ -572,17 +573,16 @@ int bfs_step(struct Graph *g, struct SearchState *state){
 int search_step(struct Graph *g, struct SearchState *state){
     if(state->mode == DFS) return dfs_step(g, state);
     else if(state->mode == BFS) return bfs_step(g, state);
-    
+
     return dfs_step(g, state);
 }
 
 
 void search_insert(struct SearchState *state, int src_node){
-    if(state->mode == DFS) 
+    if(state->mode == DFS)
         search_state_push(state, src_node);
-    else if(state->mode == BFS) 
+    else if(state->mode == BFS)
         search_state_enque(state, src_node);
     else
         search_state_push(state, src_node);
 }
-

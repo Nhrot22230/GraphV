@@ -1,4 +1,5 @@
 #include "qlib.h"
+#include <stdio.h>
 
 Plug *plug = NULL;
 
@@ -8,7 +9,7 @@ const float v_radius = 15.0f;
 int id_node = -1;
 size_t t = 0;
 
-/* 
+/*
     ========================================================================================
                                         STACKID/LISTID FUNCTIONS
     ========================================================================================
@@ -31,7 +32,7 @@ int StackId_pop(struct StackId *stack){
     stack->top = stack->top - 1;
     int val = stack->st[stack->top];
     stack->st[stack->top] = -1;
-    
+
     return val;
 }
 
@@ -39,7 +40,7 @@ void StackId_update_graph(struct StackId *stack, struct Graph *g){
     if(stack->top < 2) return;
     int des_id = StackId_pop(stack);
     int src_id = StackId_pop(stack);
-    
+
     if(list_hasId(&g->arr[src_id].adj, des_id) == -1) graph_addEdge(g, src_id, des_id);
     else graph_deleteEdge(g, src_id, des_id);
     PlaySound(plug->sfx[SOUND_EDGE]);
@@ -64,11 +65,11 @@ void StackId_clean(struct StackId *stack){
 
 void ListId_restart(struct ListNode* list, int len){
     list_free(list);
-    
+
     for(int i=0; i<len; ++i) list_addNodeRight(list, i);
 }
 
-/* 
+/*
     ========================================================================================
                                         RENDER FUNCTIONS
     ========================================================================================
@@ -76,7 +77,7 @@ void ListId_restart(struct ListNode* list, int len){
 
 void graph_edges_render(struct Graph *g, float radius){
     const int n = g->n_vertex;
-    
+
     for(int i=0; i<n; ++i){
         if(g->arr[i].id == NODE_UNDEF) continue;
 
@@ -106,10 +107,10 @@ void graph_edges_render(struct Graph *g, float radius){
             x0 = fPosX - radius * cosf(rot); y0 = fPosY + radius * sinf(rot);
             x1 = x0 - A_H * sinf(rot + PI/4); y1 = y0 + A_H * sinf(rot - PI/4);
             x2 = x0 + A_H * sinf(rot - PI/4); y2 = y0 + A_H * sinf(rot + PI/4);
-            
+
             DrawTriangle(
-                (Vector2) {x0, y0}, 
-                (Vector2) {x1, y1}, 
+                (Vector2) {x0, y0},
+                (Vector2) {x1, y1},
                 (Vector2) {x2, y2},
                 PINK
                 );
@@ -131,31 +132,31 @@ void graph_nodes_render(struct Graph *g, float radius){
 
         char buffer[20];
         sprintf(buffer, "%d", i);
-        
+
         Color c = GREEN;
         if(g->arr[i].state == NODE_SELECTED) c = SKYBLUE;
         else if(g->arr[i].state == NODE_MOVING) c = RAYWHITE;
         else if(g->arr_visited[i] == NODE_VISITED) c = GOLD;
 
         DrawCircle(posX, posY, radius, c);
-        
+
         int font_size = 20;
-        
+
         Vector2 txt_size = MeasureTextEx(GetFontDefault(), buffer, font_size, 1);
         int x = txt_size.x / 2;
         int y = txt_size.y / 2;
-        
+
         DrawText(buffer, posX - x, posY - y, font_size, BLACK);
     }
 }
 
 void graph_draw(struct Graph *g){
     graph_edges_render(g, v_radius);
-    
+
     graph_extra_render(g);
 
     graph_nodes_render(g, v_radius);
-} 
+}
 
 void search_state_draw(struct SearchState *state, int src_node){
     DrawText(search_state_get_mode_string(state->mode), 0, 10, 20, RAYWHITE);
@@ -165,7 +166,7 @@ void search_state_draw(struct SearchState *state, int src_node){
 }
 
 
-/* 
+/*
     ========================================================================================
                                         PLUG FUNCTIONS
     ========================================================================================
@@ -187,7 +188,7 @@ void state_loadSounds(Plug *p){
     p->notas[NOTE_C5] = LoadSound("./resources/notes/C5.wav");
     p->notas[NOTE_D5] = LoadSound("./resources/notes/D5.wav");
     p->notas[NOTE_E5] = LoadSound("./resources/notes/E5.wav");
-    p->notas[NOTE_F5] = LoadSound("./resources/notes/B5.wav");
+    p->notas[NOTE_F5] = LoadSound("./resources/notes/F5.wav");
 
     p->navidad[0] = p->notas[NOTE_G4];
     p->navidad[1] = p->notas[NOTE_C5];
@@ -198,7 +199,7 @@ void state_loadSounds(Plug *p){
     p->navidad[6] = p->notas[NOTE_A4];
     p->navidad[7] = p->notas[NOTE_A4];
     p->navidad[8] = p->notas[NOTE_A4];
-    
+
     p->navidad[9] = p->notas[NOTE_D5];
     p->navidad[10] = p->notas[NOTE_D5];
     p->navidad[11] = p->notas[NOTE_E5];
@@ -225,19 +226,20 @@ void state_loadSounds(Plug *p){
 }
 
 void state_init(void){
-    plug = malloc(sizeof(*plug));
-    memset(plug, 0, sizeof(*plug));
-    plug->src_node = 0;
-    
-    graph_init(&plug->g, N);
-    
-    ListId_restart(&plug->list_id, N); 
-    search_state_init(&plug->state, N);
-    search_state_push(&plug->state, plug->src_node);
-    StackId_init(&plug->node_stack);
 
-    state_loadSounds(plug);
-    InitializeSnowfall(plug->snowfall, GetRenderWidth(), GetRenderHeight());
+  printf("Hello from qlib\n");
+  plug = malloc(sizeof(*plug));
+  memset(plug, 0, sizeof(*plug));
+  plug->src_node = 0;
+
+  graph_init(&plug->g, N);
+  ListId_restart(&plug->list_id, N);
+  search_state_init(&plug->state, N);
+  search_state_push(&plug->state, plug->src_node);
+  StackId_init(&plug->node_stack);
+
+  state_loadSounds(plug);
+  InitializeSnowfall(plug->snowfall, GetRenderWidth(), GetRenderHeight());
 }
 
 Plug* state_pre_reload(void){
@@ -249,7 +251,7 @@ void state_post_reload(Plug *p){
 }
 
 void state_logic(void){
-    /* 
+    /*
     ========================================================================================
                                     MOUSE INPUT
     ========================================================================================
@@ -267,9 +269,9 @@ void state_logic(void){
         else{
             float posX = GetMouseX();
             float posY = GetMouseY();
-            
+
             id_node = IsNodeHere(&plug->g, posX, posY, v_radius);
-            if(id_node != NODE_UNDEF) 
+            if(id_node != NODE_UNDEF)
                 node_alt_state(&plug->g, id_node);
             else{
                 PlaySound(plug->sfx[SOUND_NODE]);
@@ -282,12 +284,12 @@ void state_logic(void){
         }
     }
 
-    /* 
+    /*
     ========================================================================================
                                     KEYBINNDINGS
     ========================================================================================
     */
-        
+
     if(IsKeyPressed(KEY_D) && plug->g.arr[plug->src_node].id != NODE_UNDEF) {
         if(search_state_empty(&plug->state) == 0){
             PlaySound(plug->navidad[plug->nav_cur]);
@@ -295,7 +297,7 @@ void state_logic(void){
             search_step(&plug->g, &plug->state);
         }
     }
-    
+
     if(IsKeyPressed(KEY_P)){
         state_print(plug);
     }
@@ -333,95 +335,88 @@ void state_update(void){
 }
 
 void state_render(void){
-    BeginDrawing();
-    Color c = {0x18, 0x18, 0x18, 255};
-    ClearBackground(c);
-
-    graph_draw(&plug->g);
-    search_state_draw(&plug->state, plug->src_node);
-    DrawSnowfall(plug->snowfall);
-
-    EndDrawing();
+  Color c = {0x18, 0x18, 0x18, 255};
+  ClearBackground(c);
+  graph_draw(&plug->g);
+  search_state_draw(&plug->state, plug->src_node);
+  // DrawSnowfall(plug->snowfall);
 }
 
-/* 
+/*
     ========================================================================================
                                     ADDITIONAL PLUG FUNCTIONS
     ========================================================================================
 */
 
 void state_delNode(struct Graph *g, struct StackId *stack, struct ListNode *list){
-    float posX = GetMouseX();
-    float posY = GetMouseY();
+  float posX = GetMouseX();
+  float posY = GetMouseY();
 
-    int temp_id = IsNodeHere(g, posX, posY, v_radius);
-    if(temp_id != NODE_UNDEF) {
-        if(g->arr[temp_id].state == NODE_SELECTED){
-            g->arr[id_node].state = DEFAULT_STATE;
-            id_node = NODE_UNDEF;
-            StackId_pop(stack);
-        }
-        graph_deleteNode(g, temp_id);
-        list_addNodeLeft(list, temp_id);
+  int temp_id = IsNodeHere(g, posX, posY, v_radius);
+  if(temp_id != NODE_UNDEF) {
+    if(g->arr[temp_id].state == NODE_SELECTED){
+      g->arr[id_node].state = DEFAULT_STATE;
+      id_node = NODE_UNDEF;
+      StackId_pop(stack);
     }
+    graph_deleteNode(g, temp_id);
+    list_addNodeLeft(list, temp_id);
+  }
 }
 
 void state_addNode(struct Graph *g, struct ListNode *list){
-    float posX = GetMouseX();
-    float posY = GetMouseY();
+  float posX = GetMouseX();
+  float posY = GetMouseY();
 
-    int new_id = list_popLeft(list);
-    graph_addVertex(g, new_id, posX, posY);
+  int new_id = list_popLeft(list);
+  graph_addVertex(g, new_id, posX, posY);
 }
 
 void state_restart(Plug *p){
-    graph_clean(&p->g);
+  graph_clean(&p->g);
 
-    ListId_restart(&plug->list_id, N);
-    StackId_clean(&p->node_stack); 
+  ListId_restart(&plug->list_id, N);
+  StackId_clean(&p->node_stack);
 
-    state_restart_search(p);
-    search_insert(&p->state, p->src_node);
+  state_restart_search(p);
+  search_insert(&p->state, p->src_node);
 }
 
 void state_restart_search(Plug *p){
-    graph_clean_visited(&p->g);
-    search_state_clean(&p->state);
+  graph_clean_visited(&p->g);
+  search_state_clean(&p->state);
 }
 
 void state_print(Plug *p){
-    search_state_print(&p->state);
-    graph_print(&p->g);
-    StackId_print(&p->node_stack);
-    printf("Id_Node=%d\n", id_node);
-    if(id_node != NODE_UNDEF) printf("Id_Node_State=%d\n", p->g.arr[id_node].state);
+  search_state_print(&p->state);
+  graph_print(&p->g);
+  StackId_print(&p->node_stack);
+  printf("Id_Node=%d\n", id_node);
+  if(id_node != NODE_UNDEF) printf("Id_Node_State=%d\n", p->g.arr[id_node].state);
 }
 
 
 void InitializeSnowfall(Snowflake snowfall[], int screenWidth, int screenHeight) {
-    for (int i = 0; i < 200; i++) {
-        snowfall[i].position.x = GetRandomValue(0, screenWidth);
-        snowfall[i].position.y = GetRandomValue(0, screenHeight);
-        snowfall[i].color = WHITE;
-        snowfall[i].speed = GetRandomValue(1, 10) / 10.0f;
-    }
+  for (int i = 0; i < 200; i++) {
+    snowfall[i].position.x = GetRandomValue(0, screenWidth);
+    snowfall[i].position.y = GetRandomValue(0, screenHeight);
+    snowfall[i].color = WHITE;
+    snowfall[i].speed = GetRandomValue(1, 10) / 10.0f;
+  }
 }
 
 void UpdateSnowfall(Snowflake snowfall[], int screenWidth, int screenHeight) {
-    for (int i = 0; i < 200; i++) {
-        snowfall[i].position.y += snowfall[i].speed;
-        snowfall[i].position.x -= GetRandomValue(1, 20) / 10.0f;
-
-        // Reset snowflake position if it goes below the screen
-        if (snowfall[i].position.y > screenHeight) {
-            snowfall[i].position.y = 0;
-            snowfall[i].position.x = GetRandomValue(0, screenWidth);
-        }
-        if(snowfall[i].position.x < 0){
-            snowfall[i].position.x = screenWidth;
-        }
-
+  for (int i = 0; i < 200; i++) {
+    snowfall[i].position.y += snowfall[i].speed;
+    snowfall[i].position.x -= GetRandomValue(1, 20) / 10.0f;
+    if (snowfall[i].position.y > screenHeight) {
+      snowfall[i].position.y = 0;
+      snowfall[i].position.x = GetRandomValue(0, screenWidth);
     }
+    if(snowfall[i].position.x < 0){
+      snowfall[i].position.x = screenWidth;
+    }
+  }
 }
 
 void DrawSnowfall(Snowflake snowfall[]) {

@@ -36,7 +36,7 @@ struct GraphNode {
 
     float posX;
     float posY;
-    
+
     float curX;
     float curY;
     struct ListNode adj;
@@ -71,7 +71,7 @@ struct SearchState {
 struct Node* node_create(int id);
 float GetDistance(float x1, float y1, float x2, float y2);
 int IsNodeHere(struct Graph *g, float posX, float posY, float radius);
-void node_move(struct Graph *g, int id, float posX, float posY); 
+void node_move(struct Graph *g, int id, float posX, float posY);
 void node_alt_state(struct Graph *g, int id);
 
 struct ListNode* list_create();
@@ -125,4 +125,3 @@ int search_step(struct Graph *g, struct SearchState *state);
 void search_insert(struct SearchState *state, int src_node);
 
 #endif // GRAPH_H
-
