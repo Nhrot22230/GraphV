@@ -15,7 +15,13 @@ GraphV is a lightweight and interactive graph visualization tool implemented in 
 
 ### Prerequisites
 
-Make sure you have Raylib installed on your system. Follow the [Raylib installation instructions](https://github.com/raysan5/raylib/wiki/Working-on-macOS) for your platform.
+Make sure you have Raylib installed on your system. Follow the [Raylib installation instructions](https://github.com/raysan5/raylib/wiki/) for your platform.
+
+For Ubuntu, you can install the required dependencies using the following commands:
+```bash
+sudo apt install build-essential git
+sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
+```
 
 ### Compilation
 
