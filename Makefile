@@ -5,7 +5,7 @@ LDFLAGS = -L./raylib/src -lraylib -lm -lpthread -ldl -lrt -lX11
 INCLUDES = -I./raylib/src -Isrc
 SRC = src/main.c
 BUILD_DIR = build
-OUT = $(BUILD_DIR)/main
+OUT = $(BUILD_DIR)/graphv
 QLIB_SO = $(BUILD_DIR)/qlib.so
 
 RAYLIB_SHARED = ./raylib/src/libraylib.so.5.5.0

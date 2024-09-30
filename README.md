@@ -24,8 +24,8 @@ Clone the repository and compile the source code using a C compiler:
 ```bash
 git clone https://github.com/yourusername/GraphV.git
 cd GraphV
-./project_setup.sh --build
-./project_setup.sh --run
+make
+./build/graphv
 ```
 
 # Features
