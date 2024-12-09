@@ -28,7 +28,7 @@ sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-d
 Clone the repository and compile the source code using a C compiler:
 
 ```bash
-git clone https://github.com/yourusername/GraphV.git
+git clone https://github.com/Nhrot22230/GraphV.git
 cd GraphV
 make
 ./build/graphv
